@@ -68,3 +68,18 @@ class FileStorage:
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
         self.reload()
+
+    def get(self, cls, id):
+        """Returns an object based on the class and its id"""
+        key = '{}.{}'.format(cls.__name__, id)
+
+        if key in self.__objects.keys():
+            return self.__objects[key]
+        return None
+
+    def count(self, cls=None):
+        """Returns number of objects in storage matching a given class,
+        or all objects if no class given"""
+        if cls:
+            return len(self.all(cls))
+        return len(self.all())
