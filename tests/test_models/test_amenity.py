@@ -8,7 +8,7 @@ import inspect
 import models
 from models import amenity
 from models.base_model import BaseModel
-import pycodestyle
+import pep8 as pycodestyle
 import unittest
 Amenity = amenity.Amenity
 
@@ -91,6 +91,7 @@ class TestAmenity(unittest.TestCase):
         """test that values in dict returned from to_dict are correct"""
         t_format = "%Y-%m-%dT%H:%M:%S.%f"
         am = Amenity()
+        # print(am.__dict__)
         new_d = am.to_dict()
         self.assertEqual(new_d["__class__"], "Amenity")
         self.assertEqual(type(new_d["created_at"]), str)

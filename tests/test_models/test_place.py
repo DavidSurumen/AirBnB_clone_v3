@@ -8,7 +8,7 @@ import inspect
 import models
 from models import place
 from models.base_model import BaseModel
-import pycodestyle
+import pep8 as pycodestyle
 import unittest
 Place = place.Place
 

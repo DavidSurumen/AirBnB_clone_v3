@@ -8,7 +8,7 @@ import inspect
 import models
 from models import state
 from models.base_model import BaseModel
-import pycodestyle
+import pep8 as pycodestyle
 import unittest
 State = state.State
 
