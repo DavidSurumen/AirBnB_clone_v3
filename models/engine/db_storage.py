@@ -38,7 +38,7 @@ class DBStorage:
                                              HBNB_MYSQL_HOST,
                                              HBNB_MYSQL_DB))
         if HBNB_ENV == "test":
-            Base.metadata.drop_all(self.__engine)
+            Base.metadata.drop_all(self.__engine, checkfirst=True)
 
     def all(self, cls=None):
         """query on the current database session"""
@@ -76,14 +76,14 @@ class DBStorage:
         self.__session.remove()
 
     def get(self, cls, id):
-        """Method to retrieve one object"""
+        """Method to retrieve one object. Usage: get(<class>, <object id>)"""
         try:
             obj = self.__session.query(cls).filter(cls.id == id).first()
             if obj:
                 return obj
             return None
         except Exception:
-            return 'Invalid arguments. Usage: get(<Class>, <object id>)'
+            return None
 
     def count(self, cls=None):
         """Method to count the number of objects in storage"""

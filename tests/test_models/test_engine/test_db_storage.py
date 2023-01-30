@@ -8,7 +8,7 @@ import inspect
 import models
 from models.engine import db_storage
 from models.amenity import Amenity
-from models.base_model import BaseModel
+from models.base_model import BaseModel, Base
 from models.city import City
 from models.place import Place
 from models.review import Review
@@ -18,6 +18,7 @@ import json
 import os
 import pep8 as pycodestyle
 import unittest
+
 DBStorage = db_storage.DBStorage
 classes = {"Amenity": Amenity, "City": City, "Place": Place,
            "Review": Review, "State": State, "User": User}
@@ -68,7 +69,7 @@ test_db_storage.py'])
                             "{:s} method needs a docstring".format(func[0]))
 
 
-class TestFileStorage(unittest.TestCase):
+class TestDBStorage(unittest.TestCase):
     """Test the FileStorage class"""
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_returns_dict(self):
@@ -86,3 +87,48 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """Test that count correctly returns the number of objects
+        in storage."""
+        stor = models.storage
+        try:
+            stor.close()
+        except Exception:
+            pass
+        Base.metadata.drop_all(stor._DBStorage__engine,
+                               checkfirst=True)
+        stor.reload()
+        self.assertEqual(stor.count(), 0)
+
+        amen = Amenity()
+        amen.name = 'Fake Amenity'
+
+        user = User()
+        user.email = 'Fake Email'
+        user.password = 'Fake Password'
+
+        amen2 = Amenity()
+        amen2.name = 'Fake Amenity2'
+
+        stor._DBStorage__session.add(amen)
+        stor._DBStorage__session.add(user)
+        stor._DBStorage__session.add(amen2)
+        stor._DBStorage__session.commit()
+
+        self.assertEqual(stor.count(), 3, "Total objects in db not 3")
+        self.assertEqual(stor.count(Amenity), 2, "Amenity objects not 2")
+        self.assertEqual(stor.count(User), 1, "User objects not 1")
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test that get corectly retrieves an object."""
+        self.assertIsNone(models.storage.get(State,
+                                             '94jr445-45kg-35fktrtey-ye-fake'))
+        state = State()
+        state.name = 'Fake State'
+
+        models.storage._DBStorage__session.add(state)
+        models.storage._DBStorage__session.commit()
+        self.assertEqual(models.storage.get(State, state.id), state)
