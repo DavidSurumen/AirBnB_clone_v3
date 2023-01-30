@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """The API module for the project's part 3"""
-from flask import Flask
+from flask import Flask, jsonify
 from models import storage
 from api.v1.views import app_views
 from os import getenv
@@ -15,6 +15,12 @@ app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 def do_teardown(exception):
     """Calls close() for this app's context"""
     storage.close()
+
+
+@app.errorhandler(404)
+def error(e):
+    """handler for 404 errors"""
+    return jsonify({"error": "Not found"}), 404
 
 
 if __name__ == "__main__":
