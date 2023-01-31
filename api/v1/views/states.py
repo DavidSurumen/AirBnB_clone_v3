@@ -34,10 +34,10 @@ def get_state(state_id):
 def delete_state(state_id):
     """Deletes a State object"""
     state = storage.get(State, state_id)
-    if state_id or state is None:
+    if state_id is None or state is None:
         abort(404)
-    state.delete()
-    state.save()
+    storage.delete(state)
+    storage.save()
     return jsonify({}), 200
 
 
@@ -68,5 +68,5 @@ def update_state(state_id):
     for key, val in res.items():
         if key not in ["id", "created_at", "updated_at"]:
             setattr(obj, key, val)
-    storage.save()
+    obj.save()
     return jsonify(obj.to_dict()), 200
