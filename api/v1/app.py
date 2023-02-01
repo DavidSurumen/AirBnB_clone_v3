@@ -8,7 +8,7 @@ from os import getenv
 app = Flask(__name__)
 app.register_blueprint(app_views)
 
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+app.json.compact = False
 
 
 @app.teardown_appcontext
