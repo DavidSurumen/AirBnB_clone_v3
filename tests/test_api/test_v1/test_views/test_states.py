@@ -113,9 +113,9 @@ class TestStateView(unittest.TestCase):
 
     def test_createstate_bad_json(self):
         """Test creating a state object with invalid json"""
-        state_args = ["name", "Mombasa"]
+        state_args = {"name": "Mombasa"}
 
-        res = self.app.post('/api/v1/states', json=state_args)
+        res = self.app.post('/api/v1/states', data=state_args)
         self.assertEqual(res.status_code, 400)
 
         self.assertEqual(res.json.get("message"), "Not a JSON")
