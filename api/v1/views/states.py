@@ -50,10 +50,10 @@ def create_state():
         res = request.get_json()
         if 'name' not in res:
             return jsonify({"message": "Missing name"}), 400
-    except BadRequest as e:
+        new_state = State(**res)
+    except (BadRequest, TypeError) as e:
         return jsonify({"message": "Not a JSON"}), 400
 
-    new_state = State(**res)
     new_state.save()
     return jsonify(new_state.to_dict()), 201
 
