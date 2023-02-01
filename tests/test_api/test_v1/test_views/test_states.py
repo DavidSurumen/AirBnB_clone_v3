@@ -132,7 +132,7 @@ class TestStateView(unittest.TestCase):
         res = self.app.post('/api/v1/states', content_type="application/json",
                             data=json.dumps(state_args))
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.json.get("message"), "Missing name")
+        self.assertEqual(res.json().get("message"), "Missing name")
 
     def test_updatestate(self):
         """Test that a State object in storage is updated."""
@@ -165,7 +165,7 @@ class TestStateView(unittest.TestCase):
                            json=bad_json)
 
         self.assertEqual(res.status_code, 400)
-        self.assertEqual(res.json.get("message"), "Not a JSON")
+        self.assertEqual(res.json().get("message"), "Not a JSON")
         storage.delete(state)
 
     def test_updatestate_bad_id(self):
