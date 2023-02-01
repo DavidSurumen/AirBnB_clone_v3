@@ -5,6 +5,7 @@ from models import storage
 from models.state import State
 from api.v1.views import app_views
 from flask import jsonify, abort, request
+from werkzeug.exceptions import BadRequest
 
 
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
@@ -45,11 +46,13 @@ def delete_state(state_id):
                  strict_slashes=False)
 def create_state():
     """Creates a new state object"""
-    res = request.get_json()
-    if type(res) != dict:
-        return abort(400, {"message": "Not a JSON"})
-    if 'name' not in res:
-        return abort(400, {"message": "Missing name"})
+    try:
+        res = request.get_json()
+        if 'name' not in res:
+            return jsonify({"message": "Missing name"}), 400
+    except BadRequest as e:
+        return jsonify({"message": "Not a JSON"}), 400
+
     new_state = State(**res)
     new_state.save()
     return jsonify(new_state.to_dict()), 201
@@ -62,10 +65,13 @@ def update_state(state_id):
     obj = storage.get(State, state_id)
     if obj is None:
         abort(404)
-    res = request.get_json()
-    if type(res) != dict:
-        return abort(400, {"message": "Not a JSON"})
-    for key, val in res.items():
+    try:
+        res = request.get_json()
+        res_items = res.items()
+    except (BadRequest, AttributeError) as e:
+        return jsonify({"message": "Not a JSON"}), 400
+
+    for key, val in res_items:
         if key not in ["id", "created_at", "updated_at"]:
             setattr(obj, key, val)
     obj.save()
