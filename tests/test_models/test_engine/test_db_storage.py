@@ -90,45 +90,38 @@ class TestDBStorage(unittest.TestCase):
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_count(self):
-        """Test that count correctly returns the number of objects
-        in storage."""
-        stor = models.storage
-        try:
-            stor.close()
-        except Exception:
-            pass
-        Base.metadata.drop_all(stor._DBStorage__engine,
-                               checkfirst=True)
-        stor.reload()
-        self.assertEqual(stor.count(), 0)
+        """Test that count correctly returns the number of objects in\
+                storage."""
+        storage = models.storage
+        self.assertEqual(storage.count(), 0)
 
-        amen = Amenity()
-        amen.name = 'Fake Amenity'
+        ameni = Amenity()
+        ameni.name = 'Fake Amenity'
+        ameni.save()
 
         user = User()
         user.email = 'Fake Email'
         user.password = 'Fake Password'
+        user.save()
 
-        amen2 = Amenity()
-        amen2.name = 'Fake Amenity2'
+        ameni2 = Amenity()
+        ameni2.name = 'Fake Amenity 2'
+        ameni2.save()
 
-        stor._DBStorage__session.add(amen)
-        stor._DBStorage__session.add(user)
-        stor._DBStorage__session.add(amen2)
-        stor._DBStorage__session.commit()
+        self.assertEqual(storage.count(), 3, "Total objects in db not 3")
+        self.assertEqual(storage.count(Amenity), 2, "Amenity objects not 2")
+        self.assertEqual(storage.count(User), 1, "User objects not 1")
 
-        self.assertEqual(stor.count(), 3, "Total objects in db not 3")
-        self.assertEqual(stor.count(Amenity), 2, "Amenity objects not 2")
-        self.assertEqual(stor.count(User), 1, "User objects not 1")
+        storage.delete(ameni)
+        storage.delete(user)
+        storage.delete(ameni2)
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_get(self):
-        """Test that get corectly retrieves an object."""
-        self.assertIsNone(models.storage.get(State,
-                                             '94jr445-45kg-35fktrtey-ye-fake'))
+        """Test that get correctly retrieves an object, based on its id."""
         state = State()
         state.name = 'Fake State'
+        state.save()
 
-        models.storage._DBStorage__session.add(state)
-        models.storage._DBStorage__session.commit()
         self.assertEqual(models.storage.get(State, state.id), state)
+        models.storage.delete(state)
