@@ -93,6 +93,9 @@ class TestDBStorage(unittest.TestCase):
         """Test that count correctly returns the number of objects in\
                 storage."""
         storage = models.storage
+        storage.close()
+        Base.metadata.drop_all(storage._DBStorage__engine, checkfirst=True)
+        storage.reload()
         self.assertEqual(storage.count(), 0)
 
         ameni = Amenity()
