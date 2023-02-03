@@ -21,6 +21,7 @@ def get_state_cities(state_id):
     all_cities = [city.to_dict() for city in state.cities]
     return jsonify(all_cities)
 
+
 @app_views.route('/cities/<city_id>', methods=['GET'],
                  strict_slashes=False)
 def get_city(city_id):
@@ -29,6 +30,7 @@ def get_city(city_id):
     if city is None:
         return abort(404)
     return jsonify(city.to_dict())
+
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'],
                  strict_slashes=False)
@@ -40,6 +42,7 @@ def delete_city(city_id):
     storage.delete(city)
     return jsonify({}), 200
 
+
 @app_views.route('/states/<state_id>/cities', methods=["POST"],
                  strict_slashes=False)
 def create_city(state_id):
@@ -48,7 +51,7 @@ def create_city(state_id):
         return abort(404)
     try:
         city_args = request.get_json()  # throws BadRequest if Content-Type\
-                # of header is not 'application/json'
+        # of header is not 'application/json'
         if 'name' not in city_args.keys():  # AttributeError if not a dict
             return jsonify({"message": "Missing name"}), 400
         city_args['state_id'] = state_id
@@ -57,6 +60,7 @@ def create_city(state_id):
     new_city = City(**city_args)
     new_city.save()
     return jsonify(new_city.to_dict()), 201
+
 
 @app_views.route('/cities/<city_id>', methods=['PUT'],
                  strict_slashes=False)
