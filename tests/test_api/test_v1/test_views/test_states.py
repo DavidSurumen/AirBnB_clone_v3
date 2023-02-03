@@ -64,7 +64,7 @@ class TestStateView(unittest.TestCase):
         storage.delete(state)
 
     def test_deletestate(self):
-        """Tests that the route /states/<state_id> for DELETE correctly
+        """Tests that the route /states/<state_id> for DELETE correctly\
         removes an object from storage."""
         state_args = {"name": "Nakuru", "id": "nakuru-kenya-2023"}
         state = State(**state_args)
@@ -78,7 +78,7 @@ class TestStateView(unittest.TestCase):
         json_format = json.loads(str(res.get_data(), encoding="utf-8"))
 
         self.assertEqual(json_format, {})
-        self.assertIsNone(storage.get('State', state_args["id"]))
+        self.assertIsNone(storage.get(State, state_args["id"]))
 
     def test_deletestate_wrong_id(self):
         """Tests that DELETE /states/<state_id> with unmatched state id
@@ -171,7 +171,7 @@ class TestStateView(unittest.TestCase):
     def test_updatestate_bad_id(self):
         """Test that updating a stored object with umatching id returns a 404
         status code."""
-        state_args = {"name": "Not Update", "id": "some-id-23"}
+        state_args = {"name": "Not Update", "id": "some-id2-23"}
         state = State(**state_args)
         state.save()
 
@@ -185,7 +185,6 @@ class TestStateView(unittest.TestCase):
         self.assertEqual(obj.name, state.name)
         self.assertEqual(obj.id, state.id)
         storage.delete(obj)
-
 
 if __name__ == "__main__":
     unittest.main()
