@@ -13,10 +13,12 @@ class City(BaseModel, Base):
     if models.storage_t == "db":
         __tablename__ = 'cities'
         state_id = Column(String(60), ForeignKey('states.id',
-                                                 ondelete="CASCADE"),
+                                                 ondelete='CASCADE'),
                           nullable=False)
         name = Column(String(128), nullable=False)
-        places = relationship("Place", backref="cities")
+        places = relationship("Place", backref="cities",
+                              cascade="all, delete, delete-orphan")
+        __mapper_args__ = {"confirm_deleted_rows": False}
     else:
         state_id = ""
         name = ""
