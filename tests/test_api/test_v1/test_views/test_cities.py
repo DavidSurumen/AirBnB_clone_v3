@@ -132,7 +132,6 @@ class TestCitiesViews(unittest.TestCase):
         self.assertIsNotNone(storage.get(City, cit.id))
         storage.delete(state)
 
-    @unittest.skip
     def test_create_city(self):
         """Test that a new city object can be correctly created."""
         state_args = {'name': 'BigState', 'id': 'small-id-0'}
@@ -151,7 +150,6 @@ class TestCitiesViews(unittest.TestCase):
         self.assertIsNotNone(storage.get(City, json_city['id']))
         storage.delete(state)
 
-    @unittest.skip
     def test_create_city_bad_state_id(self):
         """Test the attempting to create a City obj with unmatching state id\
         causes a 404."""
@@ -159,8 +157,7 @@ class TestCitiesViews(unittest.TestCase):
         res = self.app.post('/api/v1/states/no-city-ir5igt-10/cities',
                             json=city_args)
         self.assertEqual(res.status_code, 404)
-    
-    @unittest.skip
+
     def test_create_city_no_name(self):
         """Test that creating a City object without giving its name in the\
         request returns a 400 with 'Missing name'"""
@@ -210,7 +207,7 @@ class TestCitiesViews(unittest.TestCase):
 
         new_dat = {'name': 'Joburg'}
         res = self.app.put('/api/v1/cities/{}'.format(cty.id),
-                            json=new_dat)
+                           json=new_dat)
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.headers.get('Content-Type'), 'application/json')
 
