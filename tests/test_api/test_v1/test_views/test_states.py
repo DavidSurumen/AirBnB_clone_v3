@@ -186,5 +186,6 @@ class TestStateView(unittest.TestCase):
         self.assertEqual(obj.id, state.id)
         storage.delete(obj)
 
+
 if __name__ == "__main__":
     unittest.main()
