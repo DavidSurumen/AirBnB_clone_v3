@@ -113,7 +113,7 @@ class TestUserView(unittest.TestCase):
 
     def test_update_user(self):
         """Test that a User object is updated with new values."""
-        user8 = {'first_name': 'User8', 'email': 'email@user8',\
+        user8 = {'first_name': 'User8', 'email': 'email@user8',
                  'password': 'pass8'}
         user8 = User(**user8)
         user8.save()
