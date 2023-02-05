@@ -80,4 +80,4 @@ def create_place(city_id):
         return abort(404)
     req_body['city_id'] = city_id
     place = Place(**req_body)
-    return jsonify(place.to_dict()), 200
+    return jsonify(place.to_dict()), 201
