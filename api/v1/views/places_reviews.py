@@ -73,7 +73,7 @@ def update_review(review_id):
         return abort(404)
     try:
         data = request.get_json()
-        for key, val in data.keys():
+        for key, val in data.items():
             if key not in ['id', 'user_id', 'place_id', 'created_at',
                            'updated_at']:
                 setattr(rev, key, val)
