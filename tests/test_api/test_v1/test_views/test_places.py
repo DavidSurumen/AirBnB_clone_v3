@@ -127,6 +127,30 @@ class TestPlacesViews(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(res.json.get('message'), 'Not a JSON')
 
+    def test_create_place(self):
+        """Test that a new Place object is correctly created."""
+
+    def test_create_place_bad_cityid(self):
+        """Test that creating a new Place object with an umatched city_id\
+        returns a 404."""
+
+    def test_create_place_bad_json(self):
+        """Test that creating a new Place object with data that is not\
+        json returns a 400 with 'Not a JSON'"""
+
+
+    def test_create_place_no_user_id(self):
+        """Test that creating a Place object without a user_id fails with\
+        400 'Missing user_id'"""
+
+    def test_create_place_no_name(self):
+        """Test that creating a Place object without a name fails with 400\
+        'Missing name'"""
+
+    def test_create_place_bad_userid(self):
+        """Test that creating a Place object with an a user_id that does not\
+        match any existing User object fails with 404."""
+
     @classmethod
     def tearDownClass(cls):
         """Clean up objects created in setUp"""
