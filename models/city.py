@@ -6,6 +6,7 @@ from os import getenv
 import sqlalchemy
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship
+from models.place import Place
 
 
 class City(BaseModel, Base):
@@ -26,3 +27,11 @@ class City(BaseModel, Base):
     def __init__(self, *args, **kwargs):
         """initializes city"""
         super().__init__(*args, **kwargs)
+
+    if models.storage_t != 'db':
+        @property
+        def places(self):
+            """Returns all places in a city"""
+            all_places = models.storage.all(Place).values()
+            res = [place for place in all_places if place.id == self.id]
+            return res
