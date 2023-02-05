@@ -82,7 +82,6 @@ class TestPlacesViews(unittest.TestCase):
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.json, {})
         self.assertIsNone(storage.get(Place, place.id))
-        storage.delete(place)
 
     def test_delete_place_bad_id(self):
         """Test that deleting a place object with an invalid id returns a 404.
@@ -137,7 +136,6 @@ class TestPlacesViews(unittest.TestCase):
     def test_create_place_bad_json(self):
         """Test that creating a new Place object with data that is not\
         json returns a 400 with 'Not a JSON'"""
-
 
     def test_create_place_no_user_id(self):
         """Test that creating a Place object without a user_id fails with\
