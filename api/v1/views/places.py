@@ -4,6 +4,7 @@ from api.v1.views import app_views
 from models import storage
 from models.place import Place
 from models.city import City
+from models.user import User
 from flask import jsonify, abort, request
 from werkzeug.exceptions import BadRequest
 
@@ -56,4 +57,27 @@ def update_place(place_id):
     except (BadRequest, AttributeError):
         return jsonify({"message": "Not a JSON"}), 400
     place.save()
+    return jsonify(place.to_dict()), 200
+
+
+@app_views.route('/cities/<city_id>/places', methods=['POST'],
+                 strict_slashes=False)
+def create_place(city_id):
+    """Creates a Place object for a City object."""
+    city = storage.get(City, city_id)
+    if city is None:
+        return abort(404)
+    try:
+         req_body = request.get_json()
+         if 'user_id' not in req_body.keys():
+             return jsonify({'message': 'Missing user_id'}), 400
+         if 'name' not in req_body.keys():
+             return jsonify({'message': 'Missing name'}), 400
+    except (BadRequest, AttributeError):
+        return jsonify({'message': 'Not a JSON'}), 400
+    user_id = req_body.get('user_id')
+    if storage.get(User, user_id) is None:
+        return abort(404)
+    req_body['city_id'] = city_id
+    place = Place(**req_body)
     return jsonify(place.to_dict()), 200
