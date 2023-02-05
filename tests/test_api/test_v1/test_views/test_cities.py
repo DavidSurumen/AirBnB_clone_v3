@@ -16,31 +16,35 @@ class TestCitiesViews(unittest.TestCase):
         """set the flask app in testing mode."""
         app.config['TESTING'] = True
         cls.app = app.test_client()
+        cls.state_args = {'name': 'MyNewState', 'id': 'lil-state-id-0'}
+        cls.state = State(**cls.state_args)
+        cls.state.save()
+
+    @classmethod
+    def tearDownClass(cls):
+        storage.delete(cls.state)
 
     def test_get_state_cities(self):
         """Test that all cities of a state are retrieved correctly."""
-        st = {'name': 'MyNewState', 'id': 'lil-state-id-0'}
-        state = State(**st)
-        state.save()
-
-        city = {'name': 'Nairobi', 'state_id': state.id}
+        city = {'name': 'Nairobi', 'state_id': self.state.id}
         city = City(**city)
         city.save()
 
-        city2 = {'name': 'Mombasa', 'state_id': state.id}
+        city2 = {'name': 'Mombasa', 'state_id': self.state.id}
         city2 = City(**city2)
         city2.save()
 
-        res = self.app.get('/api/v1/states/{}/cities'.format(state.id))
+        res = self.app.get('/api/v1/states/{}/cities'.format(self.state.id))
 
         self.assertEqual(res.status_code, 200)
         self.assertEqual(res.headers.get("Content-Type"), "application/json")
 
         json_formt = json.loads(str(res.get_data(), encoding="utf-8"))
         for ct in json_formt:
-            self.assertEqual(ct["state_id"], st["id"])
+            self.assertEqual(ct["state_id"], self.state_args["id"])
 
-        storage.delete(state)
+        storage.delete(city)
+        storage.delete(city2)
 
     def test_get_state_cities_unmatched_state_id(self):
         """Test that getting cities of a state that does not exist returns

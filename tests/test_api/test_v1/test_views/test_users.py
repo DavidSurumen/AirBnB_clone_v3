@@ -145,3 +145,4 @@ class TestUserView(unittest.TestCase):
         self.assertEqual(res.status_code, 400)
         self.assertEqual(res.json.get("message"), "Not a JSON")
         self.assertEqual(storage.get(User, user9.id).password, 'pass9')
+        storage.delete(user9)
