@@ -23,7 +23,7 @@ if storage_t == 'db':
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                      methods=['DELETE'], strict_slashes=False)
-    def delete_amenity(place_id, amenity_id):
+    def delete_placeamenity(place_id, amenity_id):
         """Deletes an Amenity from a Place."""
         place = storage.get(Place, place_id)
         if place is None:
@@ -37,7 +37,7 @@ if storage_t == 'db':
         return jsonify({}), 200
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
-                     methods=['PUT'], strict_slashes=False)
+                     methods=['POST'], strict_slashes=False)
     def create_placeamenity(place_id, amenity_id):
         """Links an Amenity object to a Place object."""
         place = storage.get(Place, place_id)
@@ -66,7 +66,7 @@ else:
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                      methods=['DELETE'], strict_slashes=False)
-    def delete_amenity(place_id, amenity_id):
+    def delete_placeamenity(place_id, amenity_id):
         """Deletes an amenity from a place."""
         place = storage.get(Place, place_id)
         if place is None:
@@ -74,11 +74,11 @@ else:
         amenity = storage.get(Amenity, amenity_id)
         if amenity is None:
             return abort(404)
-        storage.delete(place.amenities.amenity)
+        storage.delete(amenity)
         return jsonify({}), 200
 
     @app_views.route('places/<place_id>/amenities/<amenity_id>',
-                     methods=['PUT'], strict_slashes=False)
+                     methods=['POST'], strict_slashes=False)
     def create_placeamenity(place_id, amenity_id):
         """Links an Amenity object to a Place object."""
         place = storage.get(Place, place_id)
