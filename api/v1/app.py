@@ -7,10 +7,10 @@ from os import getenv
 from flask_cors import CORS
 
 app = Flask(__name__)
-CORS(app, origins='0.0.0.0')
+CORS(app, origins='*')
 app.register_blueprint(app_views)
 
-app.config['JSON_PRETTYPRINT_REGULAR'] = True
+# app.config['JSON_PRETTYPRINT_REGULAR'] = True
 # app.json.compact = False -> will change to this in the future
 
 
@@ -27,10 +27,6 @@ def error(e):
 
 
 if __name__ == "__main__":
-    host = getenv('HBNB_API_HOST')
-    port = getenv('HBNB_API_PORT')
-
-    if host and port:
-        app.run(host=host, port=port, threaded=True)
-    else:
-        app.run(host='0.0.0.0', port=5000, threaded=True)
+    host = getenv('HBNB_API_HOST', "0.0.0.0")
+    port = getenv('HBNB_API_PORT', 5000)
+    app.run(host=host, port=port)
