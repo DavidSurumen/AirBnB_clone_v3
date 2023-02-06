@@ -21,7 +21,6 @@ if storage_t == 'db':
         amenities = [amty.to_dict() for amty in place.amenities]
         return jsonify(amenities)
 
-
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                      methods=['DELETE'], strict_slashes=False)
     def delete_amenity(place_id, amenity_id):
@@ -36,7 +35,6 @@ if storage_t == 'db':
             return abort(404)
         storage.delete(amenity)
         return jsonify({}), 200
-
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                      methods=['PUT'], strict_slashes=False)
@@ -53,7 +51,6 @@ if storage_t == 'db':
         place.amenities.append(amenity)
         place.save()
         return jsonify(amenity.to_dict()), 201
-
 else:
     # FILE STORAGE
     # list, add and remove Amenity id in the list amenity_ids of a Place obj
@@ -67,7 +64,6 @@ else:
         amenities = [ame.to_dict() for ame in place.amenities]
         return jsonify(amenities)
 
-
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                      methods=['DELETE'], strict_slashes=False)
     def delete_amenity(place_id, amenity_id):
@@ -80,7 +76,6 @@ else:
             return abort(404)
         storage.delete(place.amenities.amenity)
         return jsonify({}), 200
-
 
     @app_views.route('places/<place_id>/amenities/<amenity_id>',
                      methods=['PUT'], strict_slashes=False)
