@@ -31,6 +31,10 @@ class User(BaseModel, Base):
         """initializes user"""
         super().__init__(*args, **kwargs)
 
+    @property
+    def password(self):
+        return self.__dict__.get('_password', "")
+
     @password.setter
     def password(self, value):
         """hash the password."""
