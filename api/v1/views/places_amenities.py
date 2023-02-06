@@ -31,9 +31,9 @@ if storage_t == 'db':
         amenity = storage.get(Amenity, amenity_id)
         if amenity is None:
             return abort(404)
-        if amenity.id not in [amty.id for amty in places.amenities]:
+        if amenity.id not in [amty.id for amty in place.amenities]:
             return abort(404)
-        storage.delete(place.amenities.amenity)
+        storage.delete(amenity)
         return jsonify({}), 200
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
@@ -46,7 +46,7 @@ if storage_t == 'db':
         amenity = storage.get(Amenity, amenity_id)
         if amenity is None:
             return abort(404)
-        if amenity in places.amenities:
+        if amenity in place.amenities:
             return jsonify(amenity.to_dict()), 200
         place.amenities.append(amenity)
         place.save()
