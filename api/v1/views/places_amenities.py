@@ -33,7 +33,7 @@ if storage_t == 'db':
             return abort(404)
         if amenity.id not in [amty.id for amty in places.amenities]:
             return abort(404)
-        storage.delete(amenity)
+        storage.delete(place.amenities.amenity)
         return jsonify({}), 200
 
     @app_views.route('/places/<place_id>/amenities/<amenity_id>',
