@@ -89,7 +89,7 @@ def create_place(city_id):
 def retrieve_all_places():
     """Retrieves all place objects depending on the body of the JSON in the
     body of the request."""
-    if reqest.get_json() is None:
+    if request.get_json() is None:
         return jsonify({'message': 'Not a JSON'}), 400
 
     data = request.get_json()
