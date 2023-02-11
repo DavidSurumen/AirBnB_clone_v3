@@ -4,6 +4,7 @@ from api.v1.views import app_views
 from models import storage
 from models.place import Place
 from models.city import City
+from models.state import State
 from models.user import User
 from flask import jsonify, abort, request
 from werkzeug.exceptions import BadRequest
@@ -86,44 +87,58 @@ def create_place(city_id):
 @app_views.route('/places_search', methods=['POST'],
                  strict_slashes=False)
 def retrieve_all_places():
-    """Retrieves all place objects depending on the body of the request."""
-    try:
-        req_body = request.get_json()
-        if type(req_body) != dict:
-            raise AttributeError('Request body not valid json')
-    except (BadRequest, AttributeError):
-        return jsonify({"message": "Not a JSON"}), 400
-    if len(req_body) == 0 or [len(req_body[key]) == 0 for key in
-            req_body.keys()]:
-        return jsonify(storage.all(Place).values())
-    all_cities_id = req_body.get('cities', [])
-    states = req_body.get('states')
-    if states:
-        all_states = [storage.get(State, st_id) for st_id in states]
-        all_states = [a for a in all_states if a is not None]
-        all_cities_id += [cty.id for st in all_states for cty in st.cities]
-    all_cities_id = list(set(all_cities_id))
+    """Retrieves all place objects depending on the body of the JSON in the
+    body of the request."""
+    if reqest.get_json() is None:
+        return jsonify({'message': 'Not a JSON'}), 400
 
-    all_amenities = req_body.get("amenities")
-    all_places = []
-    if all_cities_id or all_amenities:
-        all_places2 = storage.all(Place).values()
-        if all_cities_id:
-            all_places2 = [pl for pl in all_places2 if pl.city_id in
-                           all_cities_id]
-        if all_amenities:
-            if storage_t != 'db':
-                all_places = [pl for pl in all_places2 if
-                              set(all_amenities) <= set(pl.amenities.id)]
-            else:
-                for e in all_places2:
-                    flag = True
-                    for a in all_amenities:
-                        if a not in [i.id for i in e.amenities]:
-                            flag = False
-                            break
-                    if flag:
-                        all_places.append(e)
-        else:
-            all_places = all_places2
-    return jsonify([pl.to_dict() for pl in all_places])
+    data = request.get_json()
+
+    if data and len(data):
+        states = data.get('states', None)
+        cities = data.get('cities', None)
+        amenities = data.get('amenities', None)
+
+    if not data or not len(data) or (
+            not states and
+            not cities and
+            not amenities):
+        places = storage.all(Place).values()
+        list_places = []
+        for place in places:
+            list_places.append(place.to_dict())
+        return jsonify(list_places)
+
+    list_places = []
+    if states:
+        states_obj = [storage.get(State, s_id) for s_id in states]
+        for state in states_obj:
+            if state:
+                for city in state.cities:
+                    if city:
+                        for place in city.places:
+                            list_places.append(place)
+
+    if cities:
+        city_obj = [storage.get(City, c_id) for c_id in cities]
+        for city in city_obj:
+            if city:
+                for place in city.places:
+                    if place not in list_places:
+                        list_places.append(place)
+
+    if amenities:
+        if not list_places:
+            list_places = storage.all(Place).values()
+        amenities_obj = [storage.get(Amenity, a_id) for a_id in amenities]
+        list_places = [place for place in list_places
+                       if all([am in place.amenities
+                               for am in amenities_obj])]
+
+    places = []
+    for p in list_places:
+        d = p.to_dict()
+        d.pop('amenities', None)
+        places.append(d)
+
+    return jsonify(places)
