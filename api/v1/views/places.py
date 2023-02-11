@@ -6,6 +6,7 @@ from models.place import Place
 from models.city import City
 from models.state import State
 from models.user import User
+from models.amenity import Amenity
 from flask import jsonify, abort, request
 from werkzeug.exceptions import BadRequest
 
